@@ -1,12 +1,22 @@
 package com.example.ceksubsidi
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.Gravity
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import org.json.JSONArray
@@ -14,14 +24,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.lang.reflect.Type
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
-import java.util.*
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,9 +51,44 @@ class MainActivity : AppCompatActivity() {
     val mMapKecamatan : HashMap<String, String> = HashMap()
     val mMapKelurahan : HashMap<String, String> = HashMap()
 
+    private lateinit var mInterstitialAd: InterstitialAd
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        MobileAds.initialize(this)
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+//        mInterstitialAd.adUnitId = "ca-app-pub-3007919778406514/3723799698"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+        mInterstitialAd.adListener = object :AdListener() {
+
+            override fun onAdClicked() {
+                mInterstitialAd.loadAd(AdRequest.Builder().build())
+            }
+
+            override fun onAdClosed() {
+                mInterstitialAd.loadAd(AdRequest.Builder().build())
+            }
+
+            override fun onAdFailedToLoad(p0: Int) {
+            }
+
+            override fun onAdImpression() {
+            }
+
+            override fun onAdLeftApplication() {
+            }
+
+            override fun onAdLoaded() {
+            }
+
+            override fun onAdOpened() {
+            }
+        }
+
+        adView.loadAd(AdRequest.Builder().build())
 
         btnCek.setOnClickListener {
             submit()
@@ -91,62 +134,6 @@ class MainActivity : AppCompatActivity() {
         )
         }.build()
 
-        spnProvince.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                Handler().postDelayed({
-                    try {
-                        pullKabupaten()
-                    } catch (e:Exception){}
-                }, 100)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-        }
-
-        spnKabupaten.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                Handler().postDelayed({
-                    try {
-                        pullKecamatan()
-                    } catch (e:Exception){}
-                }, 100)
-
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
-
-        spnKecamatan.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                Handler().postDelayed({
-                    try {
-                        pullKelurahan()
-                    } catch (e:Exception){}
-                }, 100)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
-
         mAdapterProvince  = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListProvince)
         mAdapterKabupaten = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListKabupaten)
         mAdapterKecamatan = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListKecamatan)
@@ -162,9 +149,212 @@ class MainActivity : AppCompatActivity() {
         spnKecamatan.adapter = mAdapterKecamatan
         spnKelurahan.adapter = mAdapterKelurahan
 
-        Handler().postDelayed({
-            pullProvince()
-        }, 100)
+        if (openDraft()) {
+
+        }
+        else {
+            Handler().postDelayed({
+                pullProvince()
+            }, 100)
+        }
+
+        spnProvince.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                try {
+                    if (spnProvince.tag == position) {
+                        spnProvince.tag = null
+                        return
+                    }
+                    spnProvince.tag = null
+                    pullKabupaten()
+                } catch (e:Exception){}
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+
+        spnKabupaten.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                try {
+                    if (spnKabupaten.tag == position) {
+                        spnKabupaten.tag = null
+                        return
+                    }
+                    spnKabupaten.tag = null
+                    pullKecamatan()
+                } catch (e:Exception){}
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+
+        spnKecamatan.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                try {
+                    if (spnKecamatan.tag == position) {
+                        spnKecamatan.tag = null
+                        return
+                    }
+                    spnKecamatan.tag = null
+                    pullKelurahan()
+                } catch (e:Exception){}
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (mInterstitialAd.isLoaded) {
+            mInterstitialAd.show()
+        }
+    }
+
+    private fun openDraft() : Boolean {
+        try {
+            val pref = this.getSharedPreferences("SYS", Context.MODE_PRIVATE)
+            if (pref.getString("KEL", null) != null) {
+
+                val type: Type = object :
+                    TypeToken<HashMap<String, String>?>() {}.type
+
+                mMapProvince.putAll(Gson().fromJson(pref.getString("PROV_SRC", "")!!, type))
+                mMapKabupaten.putAll(Gson().fromJson(pref.getString("KAB_SRC", "")!!, type))
+                mMapKecamatan.putAll(Gson().fromJson(pref.getString("KEC_SRC", "")!!, type))
+                mMapKelurahan.putAll(Gson().fromJson(pref.getString("KEL_SRC", "")!!, type))
+
+                mListProvince .addAll(mMapProvince.keys)
+                mListKabupaten.addAll(mMapKabupaten.keys)
+                mListKecamatan.addAll(mMapKecamatan.keys)
+                mListKelurahan.addAll(mMapKelurahan.keys)
+
+                mListProvince .sort()
+                mListKabupaten.sort()
+                mListKecamatan.sort()
+                mListKelurahan.sort()
+
+                spnProvince .setSelection(mListProvince.indexOf(pref.getString("PROV", "")!!))
+                spnKabupaten.setSelection(mListKabupaten.indexOf(pref.getString("KAB", "")!!))
+                spnKecamatan.setSelection(mListKecamatan.indexOf(pref.getString("KEC", "")!!))
+                spnKelurahan.setSelection(mListKelurahan.indexOf(pref.getString("KEL", "")!!))
+
+                spnProvince .tag = spnProvince.selectedItemPosition
+                spnKabupaten.tag = spnKabupaten.selectedItemPosition
+                spnKecamatan.tag = spnKecamatan.selectedItemPosition
+
+                mAdapterProvince?.notifyDataSetChanged()
+                mAdapterKabupaten?.notifyDataSetChanged()
+                mAdapterKecamatan?.notifyDataSetChanged()
+                mAdapterKelurahan?.notifyDataSetChanged()
+
+                return true
+            }
+        } catch (e:Exception) {Log.e(mTag, e.message, e)}
+        return false
+    }
+
+    private fun saveDraft() {
+        val pref = this.getSharedPreferences("SYS", Context.MODE_PRIVATE)
+        pref.edit()
+            .putString("PROV", mListProvince[spnProvince.selectedItemPosition])
+            .putString("KAB",  mListKabupaten[spnKabupaten.selectedItemPosition])
+            .putString("KEC",  mListKecamatan[spnKecamatan.selectedItemPosition])
+            .putString("KEL",  mListKelurahan[spnKelurahan.selectedItemPosition])
+            .putString("PROV_SRC",  Gson().toJson(mMapProvince))
+            .putString("KAB_SRC",   Gson().toJson(mMapKabupaten))
+            .putString("KEC_SRC",   Gson().toJson(mMapKecamatan))
+            .putString("KEL_SRC",   Gson().toJson(mMapKelurahan))
+            .commit()
+    }
+
+    var mDialogLoading : Dialog? = null
+    fun isDialogShowing() : Boolean {
+        return mDialogLoading?.isShowing ?: false
+    }
+
+    private fun showDialog() {
+        if (isDialogShowing()) {
+            return
+        }
+        mDialogLoading = setProgressDialog(this, "Memuat Informasi")
+        mDialogLoading?.setCanceledOnTouchOutside(false)
+        mDialogLoading?.setCancelable(true)
+        mDialogLoading?.show()
+    }
+
+    fun setProgressDialog(context:Context, message:String):AlertDialog {
+        val llPadding = 30
+        val ll = LinearLayout(context)
+        ll.orientation = LinearLayout.HORIZONTAL
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding)
+        ll.gravity = Gravity.CENTER
+        var llParam = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT)
+        llParam.gravity = Gravity.CENTER
+        ll.layoutParams = llParam
+
+        val progressBar = ProgressBar(context)
+        progressBar.isIndeterminate = true
+        progressBar.setPadding(0, 0, llPadding, 0)
+        progressBar.layoutParams = llParam
+
+        llParam = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+        llParam.gravity = Gravity.CENTER_VERTICAL
+        val tvText = TextView(context)
+        tvText.text = message
+        tvText.setTextColor(Color.parseColor("#000000"))
+        tvText.textSize = 20.toFloat()
+        tvText.layoutParams = llParam
+
+        ll.addView(progressBar)
+        ll.addView(tvText)
+
+        val builder = AlertDialog.Builder(context)
+        builder.setCancelable(true)
+        builder.setView(ll)
+        builder.setNegativeButton("BATAL", object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+                dismissDialog()
+            }
+        })
+
+        val dialog = builder.create()
+        dialog.setCanceledOnTouchOutside(false)
+        val window = dialog.window
+        if (window != null) {
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog.window?.attributes)
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+            dialog.window?.attributes = layoutParams
+        }
+        return dialog
+    }
+
+    fun dismissDialog() {
+        mDialogLoading?.dismiss()
     }
 
     fun getAPIService() : APIService {
@@ -187,10 +377,14 @@ class MainActivity : AppCompatActivity() {
         for (x in 3 until array.length() step 2) {
             map.put(array.getString(x+1), array.getString(x))
         }
+        map.put("..Pilih..", "-99");
         return map
     }
 
     fun pullProvince() {
+        if (!isDialogShowing()) {
+            showDialog()
+        }
         txtResult.text = ""
         mListProvince.clear()
         mListKabupaten.clear()
@@ -214,17 +408,16 @@ class MainActivity : AppCompatActivity() {
                         mMapProvince.putAll(area)
                     } catch (e:Exception) {
                         Log.e(mTag, e.message, e)
-                        showError("Info Provinsi Gagal Dimuat, Mohon ulangi")
-                        btnCek.visibility = View.GONE
-                        btnClear.visibility = View.VISIBLE
+                        if (isDialogShowing()) {
+                            Handler().postDelayed({pullProvince()}, 1000)
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<String>?, t: Throwable?) {
                     Log.e(mTag, t?.message, t)
-                    showError("Perangkat bermasalah, Mohon Periksa internet Anda lalu ulangi")
-                    btnCek.visibility = View.GONE
-                    btnClear.visibility = View.VISIBLE
+                    showInfo("Perangkat bermasalah, Mohon Periksa internet Anda lalu ulangi")
+                    dismissDialog()
                 }
             })
     }
@@ -232,6 +425,13 @@ class MainActivity : AppCompatActivity() {
     fun pullKabupaten() {
         txtResult.text = ""
         val areaId = mMapProvince[mListProvince[spnProvince.selectedItemPosition]]
+        if (areaId == "-99" || areaId == null) {
+            dismissDialog()
+            return
+        }
+        else {
+            showDialog()
+        }
         mListKabupaten.clear()
         mListKecamatan.clear()
         mListKelurahan.clear()
@@ -252,15 +452,16 @@ class MainActivity : AppCompatActivity() {
                         mMapKabupaten.putAll(area)
                     } catch (e:Exception) {
                         Log.e(mTag, e.message, e)
-                        showError("Info Kabupaten Gagal Dimuat, Mohon ulangi")
+                        if (isDialogShowing()) {
+                            Handler().postDelayed({pullKabupaten()}, 1000)
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<String>?, t: Throwable?) {
                     Log.e(mTag, t?.message, t)
-                    showError("Perangkat bermasalah, Mohon Periksa internet Anda lalu ulangi")
-                    btnCek.visibility = View.GONE
-                    btnClear.visibility = View.VISIBLE
+                    showInfo("Perangkat bermasalah, Mohon Periksa internet Anda lalu ulangi")
+                    dismissDialog()
                 }
             })
     }
@@ -268,6 +469,13 @@ class MainActivity : AppCompatActivity() {
     fun pullKecamatan() {
         txtResult.text = ""
         val areaId = mMapKabupaten[mListKabupaten[spnKabupaten.selectedItemPosition]]
+        if (areaId == "-99" || areaId == null) {
+            dismissDialog()
+            return
+        }
+        else {
+            showDialog()
+        }
         mListKecamatan.clear()
         mListKelurahan.clear()
         mAdapterKecamatan?.notifyDataSetChanged()
@@ -286,13 +494,16 @@ class MainActivity : AppCompatActivity() {
                         mMapKecamatan.putAll(area)
                     } catch (e:Exception) {
                         Log.e(mTag, e.message, e)
-                        showError("Info Kecamatan Gagal Dimuat, Mohon ulangi")
+                        if (isDialogShowing()) {
+                            Handler().postDelayed({pullKecamatan()}, 1000)
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<String>?, t: Throwable?) {
                     Log.e(mTag, t?.message, t)
-                    showError("Perangkat bermasalah, Mohon Periksa internet Anda lalu ulangi")
+                    showInfo("Perangkat bermasalah, Mohon Periksa internet Anda lalu ulangi")
+                    dismissDialog()
                 }
             })
     }
@@ -300,6 +511,13 @@ class MainActivity : AppCompatActivity() {
     fun pullKelurahan() {
         txtResult.text = ""
         val areaId = mMapKecamatan[mListKecamatan[spnKecamatan.selectedItemPosition]]
+        if (areaId == "-99" || areaId == null) {
+            dismissDialog()
+            return
+        }
+        else {
+            showDialog()
+        }
         mListKelurahan.clear()
         mAdapterKelurahan?.notifyDataSetChanged()
 
@@ -314,21 +532,39 @@ class MainActivity : AppCompatActivity() {
                         mAdapterKelurahan?.notifyDataSetChanged()
                         mMapKelurahan.clear()
                         mMapKelurahan.putAll(area)
+                        dismissDialog()
                     } catch (e:Exception) {
                         Log.e(mTag, e.message, e)
-                        showError("Info Kelurahan Gagal Dimuat, Mohon ulangi")
+                        if (isDialogShowing()) {
+                            Handler().postDelayed({pullKelurahan()}, 1000)
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<String>?, t: Throwable?) {
                     Log.e(mTag, t?.message, t)
-                    showError("Perangkat bermasalah, Mohon Periksa internet Anda lalu ulangi")
+                    showInfo("Perangkat bermasalah, Mohon Periksa internet Anda lalu ulangi")
                 }
             })
     }
 
 
     fun submit() {
+        val areaId = mMapKelurahan[mListKelurahan[spnKelurahan.selectedItemPosition]]
+        if (areaId == "-99" || areaId == null) {
+            Toast.makeText(this, "Lengkapi Lokasi pemasangan terlebih dahulu", Toast.LENGTH_SHORT)
+            return
+        }
+
+        if (edtKTP.text.isEmpty()) {
+            Toast.makeText(this, "Mohon isi KTP terlebih dahulu", Toast.LENGTH_SHORT)
+            return
+        }
+
+        saveDraft()
+        showInfo("")
+
+        showDialog()
         getAPIService().getSession()
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -337,13 +573,19 @@ class MainActivity : AppCompatActivity() {
                         getInfo()
                     }
                     else {
-                        showError("Koneksi Bermasalah\nMohon Periksa Internet Anda")
+                        if (isDialogShowing()) {
+                            Handler().postDelayed({submit()}, 1000)
+                        }
+                        else {
+                            showInfo("Koneksi Bermasalah\nMohon Periksa Internet Anda")
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<String>?, t: Throwable?) {
                     Log.e(mTag, t?.message, t)
-                    showError(t?.message + "\nSilahkan coba lagi nanti")
+                    showInfo(t?.message + "\nSilahkan coba lagi nanti")
+                    dismissDialog()
                 }
 
             })
@@ -365,14 +607,18 @@ class MainActivity : AppCompatActivity() {
                     val sc   = response?.body()?.indexOf(",", flag!!)
                     val ec   = response?.body()?.indexOf(",", sc!! + 1)
                     Log.w(mTag, "flag:$flag sc:$sc ec:$ec")
-                    txtResult.text = response?.body()?.substring(sc!!, ec!!)
+                    showInfo(response?.body()?.substring(sc!! + 2, ec!! -1) ?: "")
                 } catch (e : Exception) {
                     Log.e(mTag, e?.message, e)
-                    showError("Koneksi bermasalah\nSilahkan coba lagi")
+                    showInfo("Koneksi bermasalah\nSilahkan coba lagi")
                 }
+                dismissDialog()
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable?) {
+                Log.e(mTag, t?.message, t)
+                showInfo(t?.message + "\nSilahkan coba lagi nanti")
+                dismissDialog()
             }
         })
     }
@@ -380,10 +626,12 @@ class MainActivity : AppCompatActivity() {
 
     fun clear() {
         pullProvince()
+        scrollView.fullScroll(View.FOCUS_UP)
     }
 
-    fun showError(message:String) {
+    fun showInfo(message:String) {
         txtResult.text = message
+        scrollView.fullScroll(View.FOCUS_DOWN)
     }
 }
 
