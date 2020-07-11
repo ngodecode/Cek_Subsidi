@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ceksubsidi">
+    package="com.fxlib.ceksubsidi">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
@@ -15,7 +15,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3007919778406514~1863923115"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.fxlib.ceksubsidi.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

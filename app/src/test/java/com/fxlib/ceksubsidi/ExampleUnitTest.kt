@@ -1,4 +1,4 @@
-package com.example.ceksubsidi
+package com.fxlib.ceksubsidi
 
 import org.junit.Test
 

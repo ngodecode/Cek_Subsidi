@@ -1,4 +1,4 @@
-package com.example.ceksubsidi
+package com.fxlib.ceksubsidi
 
 import android.app.AlertDialog
 import android.app.Dialog

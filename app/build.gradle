@@ -7,7 +7,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.ceksubsidi"
+        applicationId "com.fxlib.ceksubsidi"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
@@ -16,9 +16,23 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        fearianto {
+            keyAlias 'ceksubsidi'
+            keyPassword 'jambul081'
+            storeFile file('../keystore/cekSubsidi.jks')
+            storePassword 'jambul081'
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.fearianto
+        }
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.fearianto
+            minifyEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

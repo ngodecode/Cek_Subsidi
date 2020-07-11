@@ -1,4 +1,4 @@
-package com.example.ceksubsidi
+package com.fxlib.ceksubsidi
 
 import okhttp3.MediaType
 import okhttp3.RequestBody
