@@ -8,16 +8,16 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
+import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.cek_subsidi_fragment.*
 import okhttp3.OkHttpClient
 import org.json.JSONArray
 import retrofit2.Call
@@ -31,8 +31,8 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
+class CekSubsidiFragment : Fragment() {
 
-class MainActivity : AppCompatActivity() {
 
     val mTag = "MainActivity"
     var mCookie : String? = null
@@ -51,46 +51,24 @@ class MainActivity : AppCompatActivity() {
     val mMapKecamatan : HashMap<String, String> = HashMap()
     val mMapKelurahan : HashMap<String, String> = HashMap()
 
-    private lateinit var mInterstitialAd: InterstitialAd
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        MobileAds.initialize(this)
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
-        mInterstitialAd.adListener = object :AdListener() {
-
-            override fun onAdClicked() {
-                mInterstitialAd.loadAd(AdRequest.Builder().build())
-            }
-
-            override fun onAdClosed() {
-                mInterstitialAd.loadAd(AdRequest.Builder().build())
-            }
-
-            override fun onAdFailedToLoad(p0: Int) {
-            }
-
-            override fun onAdImpression() {
-            }
-
-            override fun onAdLeftApplication() {
-            }
-
-            override fun onAdLoaded() {
-            }
-
-            override fun onAdOpened() {
-            }
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.cek_subsidi_fragment, container, false)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         adView.loadAd(AdRequest.Builder().build())
 
         btnCek.setOnClickListener {
             submit()
+            try {
+                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
+            } catch (e:Exception) {}
         }
 
         btnClear.setOnClickListener {
@@ -121,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         sslContext.init(null, trustAllCerts, SecureRandom())
         builder.sslSocketFactory(sslContext.socketFactory)
         mClient = builder.addInterceptor {
-            chain -> chain.proceed(
+                chain -> chain.proceed(
             chain.request().newBuilder()
                 .addHeader("X-GWT-Module-Base", "https://layanan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/")
                 .addHeader("X-GWT-Permutation", "A1630C2E2A3C73EFF36ABD53F8C9A151")
@@ -133,10 +111,10 @@ class MainActivity : AppCompatActivity() {
         )
         }.build()
 
-        mAdapterProvince  = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListProvince)
-        mAdapterKabupaten = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListKabupaten)
-        mAdapterKecamatan = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListKecamatan)
-        mAdapterKelurahan = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListKelurahan)
+        mAdapterProvince  = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mListProvince)
+        mAdapterKabupaten = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mListKabupaten)
+        mAdapterKecamatan = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mListKecamatan)
+        mAdapterKelurahan = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mListKelurahan)
 
         mAdapterProvince?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mAdapterKabupaten?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -224,14 +202,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (mInterstitialAd.isLoaded) {
-            mInterstitialAd.show()
-        }
     }
 
     private fun openDraft() : Boolean {
         try {
-            val pref = this.getSharedPreferences("SYS", Context.MODE_PRIVATE)
+            val pref = activity!!.getSharedPreferences("SYS", Context.MODE_PRIVATE)
             if (pref.getString("KEL", null) != null) {
 
                 val type: Type = object :
@@ -273,7 +248,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveDraft() {
-        val pref = this.getSharedPreferences("SYS", Context.MODE_PRIVATE)
+        val pref = activity!!.getSharedPreferences("SYS", Context.MODE_PRIVATE)
         pref.edit()
             .putString("PROV", mListProvince[spnProvince.selectedItemPosition])
             .putString("KAB",  mListKabupaten[spnKabupaten.selectedItemPosition])
@@ -295,7 +270,7 @@ class MainActivity : AppCompatActivity() {
         if (isDialogShowing()) {
             return
         }
-        mDialogLoading = setProgressDialog(this, "Memuat Informasi")
+        mDialogLoading = setProgressDialog(activity!!, "Memuat Informasi")
         mDialogLoading?.setCanceledOnTouchOutside(false)
         mDialogLoading?.setCancelable(true)
         mDialogLoading?.show()
@@ -549,14 +524,17 @@ class MainActivity : AppCompatActivity() {
 
 
     fun submit() {
-        val areaId = mMapKelurahan[mListKelurahan[spnKelurahan.selectedItemPosition]]
+        var areaId:String? = null
+        try {
+            areaId = mMapKelurahan[mListKelurahan[spnKelurahan.selectedItemPosition]]
+        } catch (e:Exception){}
         if (areaId == "-99" || areaId == null) {
-            Toast.makeText(this, "Lengkapi Lokasi pemasangan terlebih dahulu", Toast.LENGTH_SHORT)
+            Toast.makeText(activity!!, "Lengkapi Lokasi pemasangan terlebih dahulu", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (edtKTP.text.isEmpty()) {
-            Toast.makeText(this, "Mohon isi KTP terlebih dahulu", Toast.LENGTH_SHORT)
+            Toast.makeText(activity!!, "Mohon isi KTP terlebih dahulu", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -607,6 +585,12 @@ class MainActivity : AppCompatActivity() {
                     val ec   = response?.body()?.indexOf(",", sc!! + 1)
                     Log.w(mTag, "flag:$flag sc:$sc ec:$ec")
                     showInfo(response?.body()?.substring(sc!! + 2, ec!! -1) ?: "")
+
+                    activity
+                        ?.getSharedPreferences("SYS", Context.MODE_PRIVATE)
+                        ?.edit()?.putBoolean("ADS_PERIODIC_ENABLED", true)?.commit()
+
+                    HomeActivity.adsRewads.postValue(true)
                 } catch (e : Exception) {
                     Log.e(mTag, e?.message, e)
                     showInfo("Koneksi bermasalah\nSilahkan coba lagi")
@@ -633,6 +617,3 @@ class MainActivity : AppCompatActivity() {
         scrollView.fullScroll(View.FOCUS_DOWN)
     }
 }
-
-
-

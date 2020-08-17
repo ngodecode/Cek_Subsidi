@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CekStimulusCovidFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".CekStimulusCovidFragment"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/lyt_idPelanggan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NO ID PELANGGAN"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
+            <EditText
+                android:id="@+id/edtIdPel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:hint="KETIK IDPEL DI SINI"
+                android:inputType="number"/>
+
+            <Button
+                android:id="@+id/btnCekIdPel"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:layout_gravity="center_horizontal"
+                android:text="CEK ID PELANGGAN"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:layout_marginTop="20dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lyt_captcha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txtCaptcha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="KETIK TULISAN PADA GAMBAR DI BAWAH"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
+
+                <ImageView
+                    android:id="@+id/imgCaptcha"
+                    android:layout_below="@+id/txtCaptcha"
+                    android:layout_width="160dp"
+                    android:layout_height="70dp"
+                    android:background="#30AEAEAE"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"/>
+
+                <EditText
+                    android:id="@+id/edtCaptcha"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:minWidth="200dp"
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="KETIK DI SINI"
+                    android:layout_toRightOf="@+id/imgCaptcha"
+                    android:layout_alignBottom="@+id/imgCaptcha"/>
+
+            </RelativeLayout>
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/ads_unit_banner_tab2"
+                android:layout_marginTop="20dp">
+            </com.google.android.gms.ads.AdView>
+
+            <Button
+                android:id="@+id/btnCek"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:layout_gravity="center_horizontal"
+                android:text="CEK STIMULUS"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/colorAccent"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:layout_alignParentRight="true"
+            android:text="RESET"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/txtResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:background="#50AEAEAE"
+            android:padding="10dp"
+            />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
