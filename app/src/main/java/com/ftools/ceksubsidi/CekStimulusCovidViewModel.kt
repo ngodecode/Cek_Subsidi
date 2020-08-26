@@ -1,4 +1,4 @@
-package com.fxlib.ceksubsidi
+package com.ftools.ceksubsidi
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import okhttp3.*
 import org.json.JSONObject
-import retrofit2.Retrofit
 import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate

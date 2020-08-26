@@ -1,12 +1,12 @@
-package com.fxlib.ceksubsidi.ui.main
+package com.ftools.ceksubsidi.ui.main
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.fxlib.ceksubsidi.CekStimulusCovidFragment
-import com.fxlib.ceksubsidi.CekSubsidiFragment
-import com.fxlib.ceksubsidi.R
+import com.ftools.ceksubsidi.CekStimulusCovidFragment
+import com.ftools.ceksubsidi.CekSubsidiFragment
+import com.ftools.ceksubsidi.R
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_text_1,

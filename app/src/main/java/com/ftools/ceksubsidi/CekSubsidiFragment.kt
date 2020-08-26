@@ -1,4 +1,4 @@
-package com.fxlib.ceksubsidi
+package com.ftools.ceksubsidi
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -12,9 +12,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import android.widget.*
-import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.cek_subsidi_fragment.*
