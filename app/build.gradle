@@ -7,7 +7,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.fxlib.ceksubsidi"
+        applicationId "com.ftools.ceksubsidi"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 3
