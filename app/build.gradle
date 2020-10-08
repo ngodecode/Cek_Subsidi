@@ -10,8 +10,8 @@ android {
         applicationId "com.ftools.ceksubsidi"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 3
-        versionName "3.0"
+        versionCode 4
+        versionName "3.1"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
