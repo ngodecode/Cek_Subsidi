@@ -1,4 +1,4 @@
-package com.ftools.ceksubsidi.ui.main
+package com.ftools.cekpelanggan.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

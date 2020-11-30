@@ -1,18 +1,17 @@
-package com.ftools.ceksubsidi
+package com.ftools.cekpelanggan
 
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
-import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.*
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.ftools.ceksubsidi.ui.main.SectionsPagerAdapter
+import com.ftools.cekpelanggan.ui.main.SectionsPagerAdapter
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -32,8 +31,6 @@ class HomeActivity : AppCompatActivity() {
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
-        val tabs: TabLayout = findViewById(R.id.tabs)
-        tabs.setupWithViewPager(viewPager)
 
         MobileAds.initialize(this)
 

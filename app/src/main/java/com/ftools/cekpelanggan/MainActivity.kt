@@ -1,4 +1,4 @@
-package com.ftools.ceksubsidi
+package com.ftools.cekpelanggan
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -8,14 +8,16 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.*
-import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
-import com.google.android.gms.ads.AdRequest
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.cek_subsidi_fragment.*
+import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import org.json.JSONArray
 import retrofit2.Call
@@ -29,8 +31,8 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-class CekSubsidiFragment : Fragment() {
 
+class MainActivity : AppCompatActivity() {
 
     val mTag = "MainActivity"
     var mCookie : String? = null
@@ -49,24 +51,46 @@ class CekSubsidiFragment : Fragment() {
     val mMapKecamatan : HashMap<String, String> = HashMap()
     val mMapKelurahan : HashMap<String, String> = HashMap()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.cek_subsidi_fragment, container, false)
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private lateinit var mInterstitialAd: InterstitialAd
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        MobileAds.initialize(this)
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+        mInterstitialAd.adListener = object :AdListener() {
+
+            override fun onAdClicked() {
+                mInterstitialAd.loadAd(AdRequest.Builder().build())
+            }
+
+            override fun onAdClosed() {
+                mInterstitialAd.loadAd(AdRequest.Builder().build())
+            }
+
+            override fun onAdFailedToLoad(p0: Int) {
+            }
+
+            override fun onAdImpression() {
+            }
+
+            override fun onAdLeftApplication() {
+            }
+
+            override fun onAdLoaded() {
+            }
+
+            override fun onAdOpened() {
+            }
+        }
 
         adView.loadAd(AdRequest.Builder().build())
 
         btnCek.setOnClickListener {
             submit()
-            try {
-                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
-            } catch (e:Exception) {}
         }
 
         btnClear.setOnClickListener {
@@ -97,22 +121,22 @@ class CekSubsidiFragment : Fragment() {
         sslContext.init(null, trustAllCerts, SecureRandom())
         builder.sslSocketFactory(sslContext.socketFactory)
         mClient = builder.addInterceptor {
-                chain -> chain.proceed(
+            chain -> chain.proceed(
             chain.request().newBuilder()
-                .addHeader("X-GWT-Module-Base", "https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/")
+                .addHeader("X-GWT-Module-Base", "https://layanan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/")
                 .addHeader("X-GWT-Permutation", "A1630C2E2A3C73EFF36ABD53F8C9A151")
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36")
                 .addHeader("Content-Type", "text/x-gwt-rpc; charset=UTF-8")
                 .addHeader("Accept", "*/*")
-                .addHeader("Origin", "https://pelanggan.pln.co.id")
+                .addHeader("Origin", "https://layanan.pln.co.id")
                 .build()
         )
         }.build()
 
-        mAdapterProvince  = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mListProvince)
-        mAdapterKabupaten = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mListKabupaten)
-        mAdapterKecamatan = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mListKecamatan)
-        mAdapterKelurahan = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, mListKelurahan)
+        mAdapterProvince  = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListProvince)
+        mAdapterKabupaten = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListKabupaten)
+        mAdapterKecamatan = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListKecamatan)
+        mAdapterKelurahan = ArrayAdapter(this, android.R.layout.simple_spinner_item, mListKelurahan)
 
         mAdapterProvince?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mAdapterKabupaten?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -200,11 +224,14 @@ class CekSubsidiFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if (mInterstitialAd.isLoaded) {
+            mInterstitialAd.show()
+        }
     }
 
     private fun openDraft() : Boolean {
         try {
-            val pref = activity!!.getSharedPreferences("SYS", Context.MODE_PRIVATE)
+            val pref = this.getSharedPreferences("SYS", Context.MODE_PRIVATE)
             if (pref.getString("KEL", null) != null) {
 
                 val type: Type = object :
@@ -246,7 +273,7 @@ class CekSubsidiFragment : Fragment() {
     }
 
     private fun saveDraft() {
-        val pref = activity!!.getSharedPreferences("SYS", Context.MODE_PRIVATE)
+        val pref = this.getSharedPreferences("SYS", Context.MODE_PRIVATE)
         pref.edit()
             .putString("PROV", mListProvince[spnProvince.selectedItemPosition])
             .putString("KAB",  mListKabupaten[spnKabupaten.selectedItemPosition])
@@ -268,7 +295,7 @@ class CekSubsidiFragment : Fragment() {
         if (isDialogShowing()) {
             return
         }
-        mDialogLoading = setProgressDialog(activity!!, "Memuat Informasi")
+        mDialogLoading = setProgressDialog(this, "Memuat Informasi")
         mDialogLoading?.setCanceledOnTouchOutside(false)
         mDialogLoading?.setCancelable(true)
         mDialogLoading?.show()
@@ -330,7 +357,7 @@ class CekSubsidiFragment : Fragment() {
     }
 
     fun getAPIService() : APIService {
-        val retrofit = Retrofit.Builder().baseUrl("https://pelanggan.pln.co.id")
+        val retrofit = Retrofit.Builder().baseUrl("https://layanan.pln.co.id")
             .client(mClient!!)
             .addConverterFactory(ConverterFactory())
             .build()
@@ -367,7 +394,7 @@ class CekSubsidiFragment : Fragment() {
         mAdapterKecamatan?.notifyDataSetChanged()
         mAdapterKelurahan?.notifyDataSetChanged()
 
-        getAPIService().getArea("5|0|4|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterProvinsi|1|2|3|4|0|")
+        getAPIService().getArea("5|0|4|https://layanan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterProvinsi|1|2|3|4|0|")
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>?, response: Response<String>?) {
                     Log.w(mTag, response?.body() ?: "NULL")
@@ -411,7 +438,7 @@ class CekSubsidiFragment : Fragment() {
         mAdapterKecamatan?.notifyDataSetChanged()
         mAdapterKelurahan?.notifyDataSetChanged()
 
-        getAPIService().getArea("5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterKabupatenByKdProv|java.lang.String/2004016611|$areaId|1|2|3|4|1|5|6|")
+        getAPIService().getArea("5|0|6|https://layanan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterKabupatenByKdProv|java.lang.String/2004016611|$areaId|1|2|3|4|1|5|6|")
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>?, response: Response<String>?) {
                     Log.w(mTag, response?.body() ?: "NULL")
@@ -453,7 +480,7 @@ class CekSubsidiFragment : Fragment() {
         mAdapterKecamatan?.notifyDataSetChanged()
         mAdapterKelurahan?.notifyDataSetChanged()
 
-        getAPIService().getArea("5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterKecamatanByKdKab|java.lang.String/2004016611|$areaId|1|2|3|4|1|5|6|")
+        getAPIService().getArea("5|0|6|https://layanan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterKecamatanByKdKab|java.lang.String/2004016611|$areaId|1|2|3|4|1|5|6|")
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>?, response: Response<String>?) {
                     Log.w(mTag, response?.body() ?: "NULL")
@@ -493,7 +520,7 @@ class CekSubsidiFragment : Fragment() {
         mListKelurahan.clear()
         mAdapterKelurahan?.notifyDataSetChanged()
 
-        getAPIService().getArea("5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterDesaByKdKec|java.lang.String/2004016611|$areaId|1|2|3|4|1|5|6|")
+        getAPIService().getArea("5|0|6|https://layanan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterDesaByKdKec|java.lang.String/2004016611|$areaId|1|2|3|4|1|5|6|")
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>?, response: Response<String>?) {
                     Log.w(mTag, response?.body() ?: "NULL")
@@ -522,17 +549,14 @@ class CekSubsidiFragment : Fragment() {
 
 
     fun submit() {
-        var areaId:String? = null
-        try {
-            areaId = mMapKelurahan[mListKelurahan[spnKelurahan.selectedItemPosition]]
-        } catch (e:Exception){}
+        val areaId = mMapKelurahan[mListKelurahan[spnKelurahan.selectedItemPosition]]
         if (areaId == "-99" || areaId == null) {
-            Toast.makeText(activity!!, "Lengkapi Lokasi pemasangan terlebih dahulu", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Lengkapi Lokasi pemasangan terlebih dahulu", Toast.LENGTH_SHORT)
             return
         }
 
         if (edtKTP.text.isEmpty()) {
-            Toast.makeText(activity!!, "Mohon isi KTP terlebih dahulu", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Mohon isi KTP terlebih dahulu", Toast.LENGTH_SHORT)
             return
         }
 
@@ -572,7 +596,7 @@ class CekSubsidiFragment : Fragment() {
 
         Log.w(mTag, "areaId=$areaId / ktp=$ktp")
         getAPIService().getStatus(mCookie!!,
-            "5|0|12|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|AB6BB8F2A9B546B9DE2B259C9242D117|id.co.iconpln.web.client.service.TransService|getValidasiTarifDaya|D|java.lang.String/2004016611|R||52201|PASANG BARU|$ktp|$areaId|1|2|3|4|9|5|6|5|6|6|6|6|5|6|8|7|450|8|9|10|11|0|12|"
+            "5|0|12|https://layanan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|AB6BB8F2A9B546B9DE2B259C9242D117|id.co.iconpln.web.client.service.TransService|getValidasiTarifDaya|D|java.lang.String/2004016611|R||52201|PASANG BARU|$ktp|$areaId|1|2|3|4|9|5|6|5|6|6|6|6|5|6|8|7|450|8|9|10|11|0|12|"
         ).enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -583,12 +607,6 @@ class CekSubsidiFragment : Fragment() {
                     val ec   = response?.body()?.indexOf(",", sc!! + 1)
                     Log.w(mTag, "flag:$flag sc:$sc ec:$ec")
                     showInfo(response?.body()?.substring(sc!! + 2, ec!! -1) ?: "")
-
-                    activity
-                        ?.getSharedPreferences("SYS", Context.MODE_PRIVATE)
-                        ?.edit()?.putBoolean("ADS_PERIODIC_ENABLED", true)?.commit()
-
-                    HomeActivity.adsRewads.postValue(true)
                 } catch (e : Exception) {
                     Log.e(mTag, e?.message, e)
                     showInfo("Koneksi bermasalah\nSilahkan coba lagi")
@@ -615,3 +633,6 @@ class CekSubsidiFragment : Fragment() {
         scrollView.fullScroll(View.FOCUS_DOWN)
     }
 }
+
+
+
