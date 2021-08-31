@@ -1,4 +1,4 @@
-package com.ftools.cekpelanggan
+package com.ftools.ceksubsidi
 
 import retrofit2.Call
 import retrofit2.http.Body

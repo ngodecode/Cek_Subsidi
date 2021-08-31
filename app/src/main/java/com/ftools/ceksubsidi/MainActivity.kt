@@ -1,4 +1,4 @@
-package com.ftools.cekpelanggan
+package com.ftools.ceksubsidi
 
 import android.app.AlertDialog
 import android.app.Dialog

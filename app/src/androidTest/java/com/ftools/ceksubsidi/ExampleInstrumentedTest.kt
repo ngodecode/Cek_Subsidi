@@ -1,4 +1,4 @@
-package com.ftools.cekpelanggan
+package com.ftools.ceksubsidi
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

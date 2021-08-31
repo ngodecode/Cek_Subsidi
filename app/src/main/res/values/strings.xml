@@ -1,11 +1,16 @@
 <resources>
-    <string name="app_name">Cek ID Pelanggan PLN</string>
+    <string name="app_name">Cek Subsidi dan Stimulus PLN</string>
     <!--Test Ads-->
+    <string name="ads_unit_banner_tab1">ca-app-pub-3940256099942544/6300978111</string>
     <string name="ads_unit_banner_tab2">ca-app-pub-3940256099942544/6300978111</string>
     <string name="ads_unit_banner_reward">ca-app-pub-3940256099942544/5224354917</string>
 
     <!--Release Ads-->
-<!--    <string name="ads_unit_banner_tab2">ca-app-pub-8422567882161396/9172067840</string>-->
-<!--    <string name="ads_unit_banner_reward">ca-app-pub-8422567882161396/7375786355</string>-->
+<!--    <string name="ads_unit_banner_tab1">ca-app-pub-3007919778406514/2665628618</string>-->
+<!--    <string name="ads_unit_banner_tab2">ca-app-pub-3007919778406514/3787138599</string>-->
+<!--    <string name="ads_unit_banner_reward">ca-app-pub-3007919778406514/5655572271</string>-->
+
+    <string name="tab_text_1">Pasang Baru</string>
+    <string name="tab_text_2">Token Gratis</string>
 
 </resources>

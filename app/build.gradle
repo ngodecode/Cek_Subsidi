@@ -7,7 +7,7 @@ android {
     buildToolsVersion '30.0.2'
 
     defaultConfig {
-        applicationId "com.ftools.cekpelanggan"
+        applicationId "com.ftools.ceksubsidi"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 5
