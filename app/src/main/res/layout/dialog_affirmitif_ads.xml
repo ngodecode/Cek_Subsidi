@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="#ffffff">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtTimer"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:text="Kami mendeteksi penggunaan yang cukup banyak.\n\nMohon tunggu sebentar, hasil akan ditampilkan saat waktu telah habis"/>
+
+    <TextView
+        android:id="@+id/txtTimer"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/bg_timer"
+        android:textSize="100dp"
+        android:text="60"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true"/>
+
+    <LinearLayout
+        android:id="@+id/lytAds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtTimer"
+            android:padding="10dp"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:text="Dengan menonton iklan, Anda dapat mempercepat waktu tunggu"/>
+
+        <Button
+            android:id="@+id/btnWatchAds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tonton Iklan"
+            android:textColor="#333333"
+            android:backgroundTint="#00BCD4"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

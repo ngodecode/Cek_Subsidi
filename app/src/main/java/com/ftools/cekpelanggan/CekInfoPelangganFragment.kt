@@ -1,4 +1,4 @@
-package com.ftools.cekpelanggan
+package com.ftools.ceksubsidi
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -6,61 +6,69 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.ads.AdRequest
-import kotlinx.android.synthetic.main.cek_pelanggan_fragment.*
+import kotlinx.android.synthetic.main.cek_stimulus_covid_fragment.*
+import kotlinx.android.synthetic.main.cek_stimulus_covid_fragment.adView
+import kotlinx.android.synthetic.main.cek_stimulus_covid_fragment.btnCek
+import kotlinx.android.synthetic.main.cek_stimulus_covid_fragment.btnClear
+import kotlinx.android.synthetic.main.cek_stimulus_covid_fragment.txtResult
+import kotlinx.android.synthetic.main.cek_subsidi_fragment.*
 
 
-class CekInfoPelangganFragment : Fragment() {
+class CekStimulusCovidFragment : Fragment() {
 
     companion object {
-        fun newInstance() = CekInfoPelangganFragment()
+        fun newInstance() = CekStimulusCovidFragment()
     }
 
-    private lateinit var viewModel: CekInfoPelangganViewModel
+    private lateinit var viewModel: CekStimulusCovidViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.cek_pelanggan_fragment, container, false)
+        return inflater.inflate(R.layout.cek_stimulus_covid_fragment, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        adView.loadAd(AdRequest.Builder().build())
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CekInfoPelangganViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(CekStimulusCovidViewModel::class.java)
         viewModel.initClient()
 
         btnCekIdPel.setOnClickListener {
             if (edtIdPel.text.toString().trim().isEmpty()) {
-                Toast.makeText(activity!!, "Isi Nomor meter terlebih dahulu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity!!, "Isi ID Pelanggan terlebih dahulu", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             viewModel.getCapcha()
             try {
                 val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
-            } catch (e: Exception) {}
+            } catch (e:Exception) {}
         }
         viewModel.captcha.observe(activity!!, Observer<Bitmap> {
-            imgCaptcha.setImageBitmap(it)
-            lyt_idPelanggan.visibility = View.GONE
-            lyt_captcha.visibility = View.VISIBLE
-            btnClear.visibility = View.VISIBLE
-            adView.loadAd(AdRequest.Builder().build())
-        })
+                    imgCaptcha.setImageBitmap(it)
+                    lyt_idPelanggan.visibility = View.GONE
+                    lyt_captcha.visibility     = View.VISIBLE
+                    btnClear.visibility = View.VISIBLE
+            })
 
         viewModel.result.observe(activity!!, Observer<String> {
-            txtResult.text = it
+                txtResult.text = it
         })
 
         viewModel.success.observe(activity!!, Observer {
@@ -77,7 +85,8 @@ class CekInfoPelangganFragment : Fragment() {
         viewModel.dialog.observe(activity!!, Observer {
             if (it) {
                 showDialog()
-            } else {
+            }
+            else {
                 dismissDialog()
             }
         })
@@ -91,7 +100,7 @@ class CekInfoPelangganFragment : Fragment() {
             try {
                 val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
-            } catch (e: Exception) {}
+            } catch (e:Exception) {}
         }
 
         btnClear.setOnClickListener {
@@ -103,7 +112,7 @@ class CekInfoPelangganFragment : Fragment() {
             try {
                 val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
-            } catch (e: Exception) {}
+            } catch (e:Exception) {}
         }
     }
 
@@ -122,7 +131,7 @@ class CekInfoPelangganFragment : Fragment() {
         mDialogLoading?.show()
     }
 
-    fun setProgressDialog(context: Context, message: String): AlertDialog {
+    fun setProgressDialog(context:Context, message:String): AlertDialog {
         val llPadding = 30
         val ll = LinearLayout(context)
         ll.orientation = LinearLayout.HORIZONTAL
@@ -130,8 +139,7 @@ class CekInfoPelangganFragment : Fragment() {
         ll.gravity = Gravity.CENTER
         var llParam = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+            LinearLayout.LayoutParams.WRAP_CONTENT)
         llParam.gravity = Gravity.CENTER
         ll.layoutParams = llParam
 
@@ -140,10 +148,8 @@ class CekInfoPelangganFragment : Fragment() {
         progressBar.setPadding(0, 0, llPadding, 0)
         progressBar.layoutParams = llParam
 
-        llParam = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        llParam = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT)
         llParam.gravity = Gravity.CENTER_VERTICAL
         val tvText = TextView(context)
         tvText.text = message

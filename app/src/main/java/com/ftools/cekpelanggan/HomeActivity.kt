@@ -1,22 +1,29 @@
-package com.ftools.cekpelanggan
+package com.ftools.ceksubsidi
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.*
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.ftools.cekpelanggan.ui.main.SectionsPagerAdapter
+import com.ftools.ceksubsidi.ui.main.SectionsPagerAdapter
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import java.util.*
 
 class HomeActivity : AppCompatActivity() {
 
@@ -31,16 +38,65 @@ class HomeActivity : AppCompatActivity() {
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
+        val tabs: TabLayout = findViewById(R.id.tabs)
+        tabs.setupWithViewPager(viewPager)
 
         MobileAds.initialize(this)
 
         adsRewads?.observe(this, Observer {
             if (it) {
-                showRewardAds()
+                showAffirmitif(true)
             }
         })
 
         showDialogTerm()
+    }
+
+    var dialogAffirmitif:Dialog? = null
+    fun showAffirmitif(show: Boolean) {
+        dialogAffirmitif?.cancel()
+        if (!show) {
+            return
+        }
+        val view     = LayoutInflater.from(this).inflate(R.layout.dialog_affirmitif_ads, null)
+        val txtTimer = view.findViewById<TextView>(R.id.txtTimer)
+        val lytAds   = view.findViewById<LinearLayout>(R.id.lytAds)
+        view.findViewById<TextView>(R.id.btnWatchAds).setOnClickListener {
+            showRewardAds()
+        }
+        dialogAffirmitif = AlertDialog.Builder(this, R.style.DialogTheme)
+            .setView(view)
+            .setCancelable(false)
+            .setOnCancelListener {
+                startTimer(false)
+            }
+            .create()
+        dialogAffirmitif?.show()
+        startTimer(true, txtTimer)
+        loadRewardAds {
+            lytAds.visibility = View.VISIBLE
+        }
+    }
+
+    var timer:CountDownTimer? = null
+    fun startTimer(start: Boolean, view:TextView? = null) {
+        timer?.cancel()
+        if (!start) {
+            return
+        }
+
+        timer = object : CountDownTimer(60000, 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                view?.text = (millisUntilFinished / 1000).toString()
+            }
+
+            override fun onFinish() {
+                showAffirmitif(false)
+            }
+
+        }
+        timer?.start()
     }
 
     override fun onResume() {
@@ -49,28 +105,30 @@ class HomeActivity : AppCompatActivity() {
 
     var rewardedAd: RewardedAd? = null
     fun showRewardAds() {
-        if (rewardedAd == null) {
-            rewardedAd = RewardedAd(this, resources.getString(R.string.ads_unit_banner_reward))
+        val adCallback = object: RewardedAdCallback() {
+            override fun onRewardedAdOpened() {
+            }
+            override fun onRewardedAdClosed() {
+            }
+            override fun onUserEarnedReward(@NonNull reward: RewardItem) {
+                showAffirmitif(false)
+            }
+            override fun onRewardedAdFailedToShow(p0: Int) {
+            }
         }
+        rewardedAd?.show(this@HomeActivity, adCallback)
+    }
+    fun loadRewardAds(onLoaded:() -> Unit) {
+        rewardedAd = RewardedAd(this, resources.getString(R.string.ads_unit_banner_reward))
         val adLoadCallback = object: RewardedAdLoadCallback() {
             override fun onRewardedAdFailedToLoad(p0: Int) {
                 super.onRewardedAdFailedToLoad(p0)
+                Log.e(javaClass.simpleName, "error:$p0")
             }
 
             override fun onRewardedAdLoaded() {
                 super.onRewardedAdLoaded()
-                val adCallback = object: RewardedAdCallback() {
-                    override fun onRewardedAdOpened() {
-                    }
-                    override fun onRewardedAdClosed() {
-                    }
-                    override fun onUserEarnedReward(@NonNull reward: RewardItem) {
-                        Toast.makeText(this@HomeActivity, "Terimakasih sudah menonton", Toast.LENGTH_SHORT);
-                    }
-                    override fun onRewardedAdFailedToShow(p0: Int) {
-                    }
-                }
-                rewardedAd?.show(this@HomeActivity, null)
+                onLoaded.invoke()
             }
         }
         rewardedAd?.loadAd(AdRequest.Builder().build(), adLoadCallback)

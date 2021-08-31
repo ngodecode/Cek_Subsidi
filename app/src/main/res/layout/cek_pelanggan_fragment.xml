@@ -11,10 +11,21 @@
         tools:context=".CekInfoPelangganFragment"
         android:orientation="vertical">
 
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/ads_unit_banner_tab2"
+            android:layout_marginTop="20dp">
+        </com.google.android.gms.ads.AdView>
+
         <LinearLayout
             android:id="@+id/lyt_idPelanggan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -88,24 +99,17 @@
                     android:layout_height="70dp"
                     android:minWidth="200dp"
                     android:textSize="18sp"
+                    android:maxLines="1"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:inputType="text"
                     android:hint="KETIK DI SINI"
                     android:layout_toRightOf="@+id/imgCaptcha"
                     android:layout_alignBottom="@+id/imgCaptcha"/>
 
             </RelativeLayout>
 
-            <com.google.android.gms.ads.AdView
-                xmlns:ads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/adView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                ads:adSize="BANNER"
-                ads:adUnitId="@string/ads_unit_banner_tab2"
-                android:layout_marginTop="20dp">
-            </com.google.android.gms.ads.AdView>
 
             <Button
                 android:id="@+id/btnCek"
