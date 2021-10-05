@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="btnPrimary" parent="@android:style/TextAppearance">
+        <item name="android:backgroundTint">@color/selector_button_primary_bg</item>
+        <item name="android:textColor">@color/selector_button_primary_label</item>
+    </style>
+</resources>

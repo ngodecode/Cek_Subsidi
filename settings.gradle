@@ -1,2 +1,5 @@
 rootProject.name='Cek Subsidi'
+include ':common'
+include ':subsidy'
+include ':example'
 include ':app'

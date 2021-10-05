@@ -1,0 +1,11 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+apply from: "$rootDir/common-android.gradle"
+
+dependencies {
+    implementation Libs.androidxAppCompat
+
+
+}

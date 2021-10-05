@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".tariff.ui.TariffInfoFragment"
+    >
+    <data>
+        <variable name="province" type="com.fxlibs.subsidy.tariff.model.Area"/>
+        <variable name="district" type="com.fxlibs.subsidy.tariff.model.Area"/>
+        <variable name="subDistrict" type="com.fxlibs.subsidy.tariff.model.Area"/>
+        <variable name="village" type="com.fxlibs.subsidy.tariff.model.Area"/>
+        <variable name="status" type="com.fxlibs.subsidy.tariff.model.SubsidyStatus"/>
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    >
+
+    <TextView
+        android:id="@+id/lblLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/meter_location"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lblProvince"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/province"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtProvince" />
+
+    <TextView
+        android:id="@+id/lblDistrict"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/district"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtDistrict" />
+
+    <TextView
+        android:id="@+id/lblSubDistrict"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sub_district"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtSubDistrict" />
+
+    <TextView
+        android:id="@+id/lblVillage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/village"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtVillage" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/blLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="lblDistrict,lblProvince,lblSubDistrict,lblVillage, lblStatus, lblCustId"
+        />
+
+    <TextView
+        android:id="@+id/txtProvince"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@{province.name}"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/blLocation"
+        app:layout_constraintTop_toBottomOf="@+id/lblLocation" />
+
+    <TextView
+        android:id="@+id/txtDistrict"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@{district.name}"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/blLocation"
+        app:layout_constraintTop_toBottomOf="@+id/txtProvince" />
+
+    <TextView
+        android:id="@+id/txtSubDistrict"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@{subDistrict.name}"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/blLocation"
+        app:layout_constraintTop_toBottomOf="@+id/txtDistrict" />
+
+    <TextView
+        android:id="@+id/txtVillage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@{village.name}"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/blLocation"
+        app:layout_constraintTop_toBottomOf="@+id/txtSubDistrict" />
+
+
+    <TextView
+        android:id="@+id/lblCustomerInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/customer_info"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtVillage" />
+
+    <TextView
+        android:id="@+id/lblCustId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/customer_id"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtCustId" />
+
+    <TextView
+        android:id="@+id/lblStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/subsidy_status"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtStatus" />
+
+    <TextView
+        android:id="@+id/txtCustId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@{status.customerId}"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="@id/blLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblCustomerInfo" />
+
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@{status.status}"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="@id/blLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtCustId" />
+
+    <WebView
+        android:id="@+id/wbInfo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/txtStatus"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

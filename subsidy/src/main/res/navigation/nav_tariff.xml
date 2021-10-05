@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_tariff"
+    app:startDestination="@id/nav_tariff_fragment">
+
+    <fragment
+        android:id="@+id/nav_tariff_fragment"
+        android:name="com.fxlibs.subsidy.tariff.ui.TariffFragment"
+        android:label="@string/tariff_page_title"
+        tools:layout="@layout/fragment_tariff" >
+        <action
+            android:id="@+id/action_next"
+            app:destination="@id/nav_tariff_inquiry_fragment" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/nav_tariff_inquiry_fragment"
+        android:name="com.fxlibs.subsidy.tariff.ui.TariffInquiryFragment"
+        tools:layout="@layout/fragment_inquiry">
+
+        <action
+            android:id="@+id/action_show_info"
+            app:destination="@id/nav_tariff_info_fragment" />
+
+    </dialog>
+
+    <fragment
+        android:id="@+id/nav_tariff_info_fragment"
+        android:name="com.fxlibs.subsidy.tariff.ui.TariffInfoFragment"
+        tools:layout="@layout/fragment_tariff_info"
+        android:label="@string/info_page_title"
+        />
+
+</navigation>
