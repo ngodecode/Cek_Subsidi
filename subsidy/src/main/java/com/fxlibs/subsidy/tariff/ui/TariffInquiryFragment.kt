@@ -6,24 +6,23 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import com.fxlibs.common.data.LoadState
-import com.fxlibs.subsidy.R
+import com.fxlibs.subsidy.BuildConfig
 import com.fxlibs.subsidy.databinding.FragmentInquiryBinding
 import com.fxlibs.subsidy.tariff.core.Action
 import com.fxlibs.subsidy.tariff.core.TariffViewModel
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 
@@ -33,16 +32,14 @@ import java.util.*
  * create an instance of this fragment.
  */
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class TariffInquiryFragment : DialogFragment() {
 
     lateinit var binding:FragmentInquiryBinding
     private  var timer:CountDownTimer? = null
-    private  var job:Job? = null
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     private val viewModel:TariffViewModel by sharedViewModel()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,14 +50,13 @@ class TariffInquiryFragment : DialogFragment() {
         return binding.root
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.btnAds.setOnClickListener {
-            dismiss()
-            findNavController().navigate(TariffInquiryFragmentDirections.actionShowInfo())
+            showAds()
         }
+
         with(viewModel.state.value) {
             if (village?.id != null && customerId != null) {
                 Action.LoadStatus(village.id, customerId).let(viewModel.action)
@@ -89,9 +85,7 @@ class TariffInquiryFragment : DialogFragment() {
 
             override fun onFinish() {
                 dismiss()
-                if (binding.btnAds.isEnabled) {
-                    findNavController().navigate(TariffInquiryFragmentDirections.actionShowInfo())
-                }
+                navigateToResult()
             }
 
         }
@@ -99,12 +93,48 @@ class TariffInquiryFragment : DialogFragment() {
 
     }
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         timer?.cancel()
         viewLifecycleOwner.lifecycleScope.cancel()
+    }
+
+    private var mRewardedAd: RewardedAd? = null
+
+    private fun showAds() {
+        timer ?.cancel()
+        binding.btnAds.isVisible = false
+        binding.prgAds.isVisible = true
+        RewardedAd.load(
+            requireActivity(),
+            BuildConfig.ADS_REWARD,
+            AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                mRewardedAd = null
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                    binding.btnAds.isVisible = true
+                    binding.prgAds.isVisible = false
+                    dismiss()
+                    navigateToResult()
+                }
+            }
+
+            override fun onAdLoaded(rewardedAd: RewardedAd) {
+                mRewardedAd = rewardedAd
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                    mRewardedAd?.show(requireActivity()) { _ ->
+                        dismiss()
+                        navigateToResult()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun navigateToResult() {
+        viewModel.state.value.subsidyStatus?.data()?.let {
+            findNavController().navigate(TariffInquiryFragmentDirections.actionShowInfo())
+        }
     }
 
 }

@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.fxlibs.subsidy.BuildConfig
 import com.fxlibs.subsidy.databinding.FragmentTariffInfoBinding
 import com.fxlibs.subsidy.tariff.core.TariffViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -54,8 +56,17 @@ class TariffInfoFragment : Fragment() {
             webViewClient = WebClient(requireActivity()) {
                 parent.requestLayout()
             }
-            loadUrl("file:///android_asset/subsidy_disclaimer_end.html")
+            loadUrl(BuildConfig.DISCLAIMER_END_URL)
         }
+        binding.bindAds()
+    }
+
+    private fun FragmentTariffInfoBinding.bindAds() {
+        val ads = AdView(requireContext())
+        ads.adSize = AdSize.BANNER
+        ads.adUnitId = BuildConfig.ADS_BANNER2
+        ads.loadAd(AdRequest.Builder().build())
+        adView.addView(ads, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 
 

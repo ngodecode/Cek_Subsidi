@@ -8,6 +8,7 @@ android {
     compileSdk 30
 
     defaultConfig {
+        applicationId AppConfig.appId
         minSdk AppConfig.minSdk
         targetSdk AppConfig.targetSdk
         versionCode Releases.versionCode
@@ -16,13 +17,19 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
-        buildConfigField("String", "SUBSIDY_URL", "\"https://pelanggan.pln.co.id\"")
+        manifestPlaceholders = [adsAppId: Resources.adsAppId]
+
+        buildConfigField("String", "SUBSIDY_URL", "\"${Resources.subsidyApiUrl}\"")
+        buildConfigField("String", "UA_URL", "\"${Resources.docUA}\"")
+        buildConfigField("String", "ADS_OPEN_APP", "\"${Resources.adsDebugOpenApp}\"")
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField("String", "ADS_OPEN_APP", "\"${Resources.adsReleaseOpenApp}\"")
         }
     }
     compileOptions {
@@ -44,9 +51,16 @@ dependencies {
     implementation Libs.androidxAppCompat
     implementation Libs.androidXConstraintLayout
     implementation Libs.googleMaterial
+
+    implementation Libs.adsMob
+
     implementation Libs.koinAndroidx
+
     implementation Libs.retrofit
     implementation Libs.interceptor
+
+    implementation Libs.roomRuntime
+    kapt Libs.roomCompiler
 
     implementation Libs.fragments
     implementation Libs.navigationFragment

@@ -23,6 +23,7 @@
     <string name="back_to_home">Kembali Ke Awal</string>
 
     <string name="retry">Ulangi</string>
-    <string name="next">Lewati</string>
+    <string name="skip">Lewati</string>
+    <string name="next">Selanjutnya</string>
 
 </resources>

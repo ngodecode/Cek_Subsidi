@@ -6,6 +6,21 @@ plugins {
 }
 apply from: "$rootDir/common-android.gradle"
 android {
+    defaultConfig {
+        buildConfigField("String", "DISCLAIMER_START_URL", "\"${Resources.docDisclaimerStart}\"")
+        buildConfigField("String", "DISCLAIMER_END_URL", "\"${Resources.docDisclaimerEnd}\"")
+
+        buildConfigField("String", "ADS_BANNER1", "\"${Resources.adsDebugBanner1}\"")
+        buildConfigField("String", "ADS_BANNER2", "\"${Resources.adsDebugBanner2}\"")
+        buildConfigField("String", "ADS_REWARD", "\"${Resources.adsDebugReward}\"")
+    }
+    buildTypes {
+        release {
+            buildConfigField("String", "ADS_BANNER1", "\"${Resources.adsReleaseBanner1}\"")
+            buildConfigField("String", "ADS_BANNER2", "\"${Resources.adsReleaseBanner2}\"")
+            buildConfigField("String", "ADS_REWARD",  "\"${Resources.adsReleaseReward}\"")
+        }
+    }
     buildFeatures {
         viewBinding true
         dataBinding true
@@ -14,21 +29,19 @@ android {
 
 dependencies {
 
+    implementation project(path: ':common')
+
     implementation Libs.androidxCore
     implementation Libs.androidxAppCompat
     implementation Libs.androidXConstraintLayout
     implementation Libs.googleMaterial
     implementation Libs.koinAndroidx
+    implementation Libs.adsMob
 
     implementation Libs.fragments
     implementation Libs.navigationFragment
     implementation Libs.navigationUi
 
-    implementation project(path: ':common')
     implementation Libs.retrofit
-
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
 
 }

@@ -74,19 +74,19 @@ object SubsidyModule {
 
     private fun provideConverterFactory() = object : Converter.Factory() {
 
-        override fun responseBodyConverter (
-            type: Type?,
-            annotations: Array<out Annotation>?,
-            retrofit: Retrofit?
+        override fun responseBodyConverter(
+            type: Type,
+            annotations: Array<out Annotation>,
+            retrofit: Retrofit
         ): Converter<ResponseBody, *> {
             return Converter<ResponseBody, String> { response ->response.string() }
         }
 
         override fun requestBodyConverter(
-            type: Type?,
-            parameterAnnotations: Array<out Annotation>?,
-            methodAnnotations: Array<out Annotation>?,
-            retrofit: Retrofit?
+            type: Type,
+            parameterAnnotations: Array<out Annotation>,
+            methodAnnotations: Array<out Annotation>,
+            retrofit: Retrofit
         ): Converter<*, RequestBody> {
             return Converter<String, RequestBody> { value -> value.toRequestBody("text/x-gwt-rpc; charset=utf-8".toMediaType())}
         }

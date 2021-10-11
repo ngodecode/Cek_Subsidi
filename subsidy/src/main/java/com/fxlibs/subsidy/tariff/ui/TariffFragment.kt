@@ -1,35 +1,28 @@
 package com.fxlibs.subsidy.tariff.ui
 
-import android.net.http.SslError
-import android.os.Build
+import android.animation.LayoutTransition
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.SslErrorHandler
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.*
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentResultListener
-import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.fxlibs.common.data.LoadState
+import androidx.transition.TransitionManager
+import com.fxlibs.subsidy.BuildConfig
 import com.fxlibs.subsidy.R
 import com.fxlibs.subsidy.databinding.FragmentTariffBinding
 import com.fxlibs.subsidy.tariff.core.Action
 import com.fxlibs.subsidy.tariff.core.State
 import com.fxlibs.subsidy.tariff.core.TariffViewModel
 import com.fxlibs.subsidy.tariff.model.Area
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -61,9 +54,11 @@ class TariffFragment : Fragment() {
         binding.wbInfo.apply {
             webViewClient = WebClient(requireActivity()) {
                 parent.requestLayout()
+                (parent as? ViewGroup)?.let(TransitionManager::beginDelayedTransition)
             }
-            loadUrl("file:///android_asset/subsidy_disclaimer_start.html")
+            loadUrl(BuildConfig.DISCLAIMER_START_URL)
         }
+
         val state    = viewModel.state
         val onAction = viewModel.action
 
@@ -75,6 +70,7 @@ class TariffFragment : Fragment() {
             bindVillage   (state, onAction)
             bindInputText (state, onAction)
             bindNextAction(state, onAction)
+            bindAds()
         }
 
         if (state.value.province == null) {
@@ -206,5 +202,12 @@ class TariffFragment : Fragment() {
         }
     }
 
+    private fun FragmentTariffBinding.bindAds() {
+        val ads = AdView(requireContext())
+        ads.adSize = AdSize.BANNER
+        ads.adUnitId = BuildConfig.ADS_BANNER1
+        ads.loadAd(AdRequest.Builder().build())
+        adView.addView(ads, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+    }
 
 }

@@ -11,15 +11,23 @@ object AppConfig {
     const val compileSdk = 30
 }
 
-object Common {
-    const val models = ":common:models"
-    const val uiComponents = ":common:ui-components"
+object Resources {
+    const val subsidyApiUrl = "https://pelanggan.pln.co.id"
+    const val docUA = "https://cek-subsidi.web.app/subsidy_user_agreement.html"
+    const val docDisclaimerStart = "https://cek-subsidi.web.app/subsidy_disclaimer_start.html"
+    const val docDisclaimerEnd   = "https://cek-subsidi.web.app/subsidy_disclaimer_end.html"
+
+    const val adsAppId         = "ca-app-pub-3007919778406514~1846261763"
+    const val adsDebugOpenApp  = "ca-app-pub-3940256099942544/3419835294"
+    const val adsDebugBanner1  = "ca-app-pub-3940256099942544/6300978111"
+    const val adsDebugBanner2  = "ca-app-pub-3940256099942544/6300978111"
+    const val adsDebugReward   = "ca-app-pub-3940256099942544/5224354917"
+    const val adsReleaseOpenApp  = "ca-app-pub-3007919778406514/8775466347"
+    const val adsReleaseBanner1  = "ca-app-pub-3007919778406514/2976344750"
+    const val adsReleaseBanner2  = "ca-app-pub-3007919778406514/5972035572"
+    const val adsReleaseReward   = "ca-app-pub-3007919778406514/1443771239"
 }
 
-object Features {
-    const val movies = ":features:movies"
-    const val actors = ":features:actors"
-}
 
 object Versions {
 
@@ -41,11 +49,15 @@ object Versions {
     const val GOOGLE_MATERIAL_VERSION = "1.4.0"
     const val ANDROIDX_CONSTRAINT_LAYOUT_VERSION = "2.0.4"
 
+    const val ANDROIDX_ROOM = "2.3.0"
+    const val ADSMOB = "20.4.0"
+
 }
 
 object Libs {
 
     const val gradleTools = "com.android.tools.build:gradle:${Versions.GRADLE_TOOLS_VERSION}"
+    const val adsMob = "com.google.android.gms:play-services-ads:${Versions.ADSMOB}"
 
     // Kotlin
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.KOTLIN_VERSION}"
@@ -65,6 +77,9 @@ object Libs {
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT_VERSION}"
     const val moshi = "com.squareup.retrofit2:converter-moshi:${Versions.RETROFIT_VERSION}"
     const val interceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.LOGGING_INTERCEPTOR_VERSION}"
+    //Room
+    const val roomRuntime = "androidx.room:room-ktx:${Versions.ANDROIDX_ROOM}"
+    const val roomCompiler = "androidx.room:room-compiler:${Versions.ANDROIDX_ROOM}"
 
     // MockWebServer
 
