@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="tariff_page_title">Cek Subsidi Pasang Baru</string>
-    <string name="info_page_title">Status Subsidi Pasang Baru</string>
+    <string name="tariff_page_title">Cek Subsidi Pasang Listrik</string>
+    <string name="info_page_title">Status Subsidi Pasang Listrik</string>
     <string name="attention">Perhatian</string>
     <string name="meter_location"># Lokasi Pemasangan Meter</string>
     <string name="province">Provinsi</string>
