@@ -22,8 +22,4 @@ class WebClient(val activity:Activity, val onLoaded:() -> Unit) : WebViewClient(
         return true
     }
 
-    override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
-        handler?.proceed()
-    }
-
 }
