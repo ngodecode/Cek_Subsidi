@@ -24,7 +24,6 @@ class AppOpenManager(myApplication: MyApp?): AppOpenAd.AppOpenAdLoadCallback(), 
     Application.ActivityLifecycleCallbacks {
 
 
-    private val AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294"
     private var appOpenAd: AppOpenAd? = null
 
     private var loadCallback: AppOpenAdLoadCallback? = null
@@ -69,7 +68,7 @@ class AppOpenManager(myApplication: MyApp?): AppOpenAd.AppOpenAdLoadCallback(), 
             }
         }
         val request = getAdRequest()
-        AppOpenAd.load(myApplication, AD_UNIT_ID, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback)
+        AppOpenAd.load(myApplication, BuildConfig.ADS_OPEN_APP, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback)
     }
 
     private var isShowingAd = false
