@@ -1,6 +1,5 @@
 package com.fxlibs.subsidy.tariff.ui
 
-import android.animation.LayoutTransition
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +21,10 @@ import com.fxlibs.subsidy.tariff.model.Area
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
+import com.unity3d.services.banners.BannerErrorInfo
+import com.unity3d.services.banners.BannerView
+import com.unity3d.services.banners.UnityBannerSize
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -71,6 +72,7 @@ class TariffFragment : Fragment() {
             bindInputText (state, onAction)
             bindNextAction(state, onAction)
             bindAds()
+            bindAdsUnity()
         }
 
         if (state.value.province == null) {
@@ -207,6 +209,25 @@ class TariffFragment : Fragment() {
         ads.adSize = AdSize.BANNER
         ads.adUnitId = BuildConfig.ADS_BANNER1
         ads.loadAd(AdRequest.Builder().build())
+        adView.addView(ads, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+    }
+    private fun FragmentTariffBinding.bindAdsUnity() {
+        val listener = object: BannerView.IListener {
+            override fun onBannerLoaded(p0: BannerView?) {
+            }
+
+            override fun onBannerClick(p0: BannerView?) {
+            }
+
+            override fun onBannerFailedToLoad(p0: BannerView?, p1: BannerErrorInfo?) {
+            }
+
+            override fun onBannerLeftApplication(p0: BannerView?) {
+            }
+        }
+        val ads = BannerView(requireActivity(), BuildConfig.UNITY_ADS_BANNER1, UnityBannerSize.getDynamicSize(requireContext()))
+        ads.listener = listener
+        ads.load()
         adView.addView(ads, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 

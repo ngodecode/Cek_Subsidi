@@ -20,6 +20,10 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.unity3d.ads.IUnityAdsLoadListener
+import com.unity3d.ads.IUnityAdsShowListener
+import com.unity3d.ads.UnityAds
+import com.unity3d.ads.UnityAdsShowOptions
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -99,6 +103,8 @@ class TariffInquiryFragment : DialogFragment() {
         viewLifecycleOwner.lifecycleScope.cancel()
     }
 
+    class Empty
+
     private var mRewardedAd: RewardedAd? = null
 
     private fun showAds() {
@@ -111,12 +117,7 @@ class TariffInquiryFragment : DialogFragment() {
             AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 mRewardedAd = null
-                if (lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
-                    binding.btnAds.isVisible = true
-                    binding.prgAds.isVisible = false
-                    dismiss()
-                    navigateToResult()
-                }
+                showUnityAds()
             }
 
             override fun onAdLoaded(rewardedAd: RewardedAd) {
@@ -135,6 +136,61 @@ class TariffInquiryFragment : DialogFragment() {
         viewModel.state.value.subsidyStatus?.data()?.let {
             findNavController().navigate(TariffInquiryFragmentDirections.actionShowInfo())
         }
+    }
+
+    private fun showUnityAds() {
+        if (!UnityAds.isInitialized()) return
+        UnityAds.load(BuildConfig.UNITY_ADS_REWARD, object : IUnityAdsLoadListener {
+            override fun onUnityAdsAdLoaded(p0: String?) {
+                UnityAds.show(requireActivity(), BuildConfig.UNITY_ADS_REWARD, UnityAdsShowOptions(), object :
+                    IUnityAdsShowListener {
+                    override fun onUnityAdsShowFailure(
+                        p0: String?,
+                        p1: UnityAds.UnityAdsShowError?,
+                        p2: String?
+                    ) {
+                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                            binding.btnAds.isVisible = true
+                            binding.prgAds.isVisible = false
+                            dismiss()
+                            navigateToResult()
+                        }
+                    }
+
+                    override fun onUnityAdsShowStart(p0: String?) {
+                    }
+
+                    override fun onUnityAdsShowClick(p0: String?) {
+                    }
+
+                    override fun onUnityAdsShowComplete(
+                        p0: String?,
+                        p1: UnityAds.UnityAdsShowCompletionState?
+                    ) {
+                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                            binding.btnAds.isVisible = true
+                            binding.prgAds.isVisible = false
+                            dismiss()
+                            navigateToResult()
+                        }
+                    }
+                })
+            }
+
+            override fun onUnityAdsFailedToLoad(
+                p0: String?,
+                p1: UnityAds.UnityAdsLoadError?,
+                p2: String?
+            ) {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                    binding.btnAds.isVisible = true
+                    binding.prgAds.isVisible = false
+                    dismiss()
+                    navigateToResult()
+                }
+            }
+
+        })
     }
 
 }

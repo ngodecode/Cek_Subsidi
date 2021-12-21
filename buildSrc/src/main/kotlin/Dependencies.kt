@@ -1,6 +1,6 @@
 object Releases {
-    const val versionCode = 4
-    const val versionName = "1.2"
+    const val versionCode = 5
+    const val versionName = "2.0"
 }
 
 object AppConfig {
@@ -26,6 +26,11 @@ object Resources {
     const val adsReleaseBanner1  = "ca-app-pub-3007919778406514/2976344750"
     const val adsReleaseBanner2  = "ca-app-pub-3007919778406514/5972035572"
     const val adsReleaseReward   = "ca-app-pub-3007919778406514/1443771239"
+
+    const val unityAdsGameId   = "4516577"
+    const val unityAdsBanner1  = "Banner_Android"
+    const val unityAdsBanner2  = "Banner_2"
+    const val unityAdsReward   = "Rewarded_Android"
 }
 
 

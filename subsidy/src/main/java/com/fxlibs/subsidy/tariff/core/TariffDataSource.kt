@@ -12,7 +12,7 @@ class TariffDataSource(private val api:TariffService) {
 
     fun getProvince():Result<List<Province>> {
         try {
-            val body = "5|0|4|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterProvinsi|1|2|3|4|0|"
+            val body = "5|0|4|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F5ED6176F0BE170C1DC52CF4082F4AB9|id.co.iconpln.web.client.service.MasterService|getMasterProvinsi|1|2|3|4|0|"
             val response = api.getArea(body).execute()
             if (response.isSuccessful) {
                 val resp = response.body()
@@ -31,7 +31,7 @@ class TariffDataSource(private val api:TariffService) {
 
     fun getDistrict(provinceId:String):Result<List<District>> {
         try {
-            val body = "5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterKabupatenByKdProv|java.lang.String/2004016611|$provinceId|1|2|3|4|1|5|6|"
+            val body = "5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F5ED6176F0BE170C1DC52CF4082F4AB9|id.co.iconpln.web.client.service.MasterService|getMasterKabupatenByKdProv|java.lang.String/2004016611|$provinceId|1|2|3|4|1|5|6|"
             val response = api.getArea(body).execute()
             if (response.isSuccessful) {
                 response.body()?.let(::toAreaMap)?.map { e -> District(e.key, e.value) }?.let {
@@ -49,7 +49,7 @@ class TariffDataSource(private val api:TariffService) {
 
     fun getSubDistrict(districtId:String):Result<List<SubDistrict>> {
         try {
-            val body = "5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterKecamatanByKdKab|java.lang.String/2004016611|$districtId|1|2|3|4|1|5|6|"
+            val body = "5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F5ED6176F0BE170C1DC52CF4082F4AB9|id.co.iconpln.web.client.service.MasterService|getMasterKecamatanByKdKab|java.lang.String/2004016611|$districtId|1|2|3|4|1|5|6|"
             val response = api.getArea(body).execute()
             if (response.isSuccessful) {
                 response.body()?.let(::toAreaMap)?.map { e -> SubDistrict(e.key, e.value) }?.let {
@@ -66,7 +66,7 @@ class TariffDataSource(private val api:TariffService) {
     }
     fun getVillage(subDistrictId:String):Result<List<Village>> {
         try {
-            val body = "5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F70866662104DD987A6DE8B1B78CD0FF|id.co.iconpln.web.client.service.MasterService|getMasterDesaByKdKec|java.lang.String/2004016611|$subDistrictId|1|2|3|4|1|5|6|"
+            val body = "5|0|6|https://pelanggan.pln.co.id/id.co.iconpln.web.PBMohonEntryPoint/|F5ED6176F0BE170C1DC52CF4082F4AB9|id.co.iconpln.web.client.service.MasterService|getMasterDesaByKdKec|java.lang.String/2004016611|$subDistrictId|1|2|3|4|1|5|6|"
             val response = api.getArea(body).execute()
             if (response.isSuccessful) {
                 response.body()?.let(::toAreaMap)?.map { e -> Village(e.key, e.value) }?.let {

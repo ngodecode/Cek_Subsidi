@@ -13,9 +13,16 @@ android {
         buildConfigField("String", "ADS_BANNER1", "\"${Resources.adsDebugBanner1}\"")
         buildConfigField("String", "ADS_BANNER2", "\"${Resources.adsDebugBanner2}\"")
         buildConfigField("String", "ADS_REWARD", "\"${Resources.adsDebugReward}\"")
+
+        buildConfigField("boolean", "UNITY_TEST_MODE", "true")
+        buildConfigField("String", "UNITY_GAME_ID", "\"${Resources.unityAdsGameId}\"")
+        buildConfigField("String", "UNITY_ADS_BANNER1", "\"${Resources.unityAdsBanner1}\"")
+        buildConfigField("String", "UNITY_ADS_BANNER2", "\"${Resources.unityAdsBanner2}\"")
+        buildConfigField("String", "UNITY_ADS_REWARD", "\"${Resources.unityAdsReward}\"")
     }
     buildTypes {
         release {
+            buildConfigField("boolean", "UNITY_TEST_MODE", "false")
             buildConfigField("String", "ADS_BANNER1", "\"${Resources.adsReleaseBanner1}\"")
             buildConfigField("String", "ADS_BANNER2", "\"${Resources.adsReleaseBanner2}\"")
             buildConfigField("String", "ADS_REWARD",  "\"${Resources.adsReleaseReward}\"")
@@ -43,5 +50,6 @@ dependencies {
     implementation Libs.navigationUi
 
     implementation Libs.retrofit
+    implementation files('../unity/unity-ads.aar')
 
 }
