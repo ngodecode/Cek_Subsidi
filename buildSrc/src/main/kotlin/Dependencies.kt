@@ -1,6 +1,6 @@
 object Releases {
-    const val versionCode = 5
-    const val versionName = "2.0"
+    const val versionCode = 6
+    const val versionName = "2.1"
 }
 
 object AppConfig {
